@@ -31,6 +31,8 @@ namespace PluginAPI.Core
 	using PlayerRoles.Voice;
 	using InventorySystem.Items.Firearms.Ammo;
 	using CentralAuth;
+	using PluginAPI.Core.Features;
+	using YamlDotNet.Core.Tokens;
 
 	/// <summary>
 	/// Represents a player connected to server.
@@ -963,6 +965,8 @@ namespace PluginAPI.Core
 
 		internal PlayerSharedStorage SharedStorage { get; }
 
+		private CustomHealthStat healthStat;
+
 		#endregion
 
 		#region Constructor
@@ -984,6 +988,7 @@ namespace PluginAPI.Core
 			if (!PlayersIds.ContainsKey(PlayerId))
 				PlayersIds.Add(PlayerId, ReferenceHub);
 
+			ReferenceHub.playerStats._dictionarizedTypes[typeof(HealthStat)] = ReferenceHub.playerStats.StatModules[Array.IndexOf(PlayerStats.DefinedModules, typeof(HealthStat))] = healthStat = new CustomHealthStat { Hub = value };
 			try
 			{
 				OnStart();
@@ -994,8 +999,9 @@ namespace PluginAPI.Core
 			}
 		}
 
-		#endregion
 
+
+		#endregion
 		#region Internal Methods
 
 		internal void OnInternalDestroy()
